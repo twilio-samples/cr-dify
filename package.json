@@ -16,7 +16,7 @@
     "@fastify/env": "^5.0.2",
     "@fastify/formbody": "^8.0.2",
     "@fastify/websocket": "^11.2.0",
-    "@twilio-labs/conversationrelay-bridge": "/Users/ktalebian/Projects/github/twilio-internal/conversationrelay-bridge-js",
+    "@twilio-forward/conversationrelay-bridge": "^0.2.0",
     "awilix": "^12.0.5",
     "dotenv": "^17.2.1",
     "eventsource-parser": "^3.0.3",

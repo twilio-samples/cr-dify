@@ -3,14 +3,13 @@ import { JSONSchemaType } from "env-schema";
 export interface Config {
   DIFY_API_KEY: string;
   PORT: number;
-  NGROK_DOMAIN: string;
-  FLY_DOMAIN: string;
+  DOMAIN: string;
   LOG_LEVEL: string;
 }
 
 const envSchema: JSONSchemaType<Config> = {
   type: "object",
-  required: ["DIFY_API_KEY"],
+  required: ["DIFY_API_KEY", "DOMAIN"],
   properties: {
     DIFY_API_KEY: {
       type: "string",
@@ -19,10 +18,7 @@ const envSchema: JSONSchemaType<Config> = {
       type: "integer",
       default: 8080,
     },
-    NGROK_DOMAIN: {
-      type: "string",
-    },
-    FLY_DOMAIN: {
+    DOMAIN: {
       type: "string",
     },
     LOG_LEVEL: {

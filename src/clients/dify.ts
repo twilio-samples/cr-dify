@@ -31,47 +31,51 @@ export type DifyMessage = {
 };
 
 type Config = {
-  DIFY_API_KEY: string;
+  defiyApiKey: string;
   logger: FastifyBaseLogger;
 };
 
-type RequestOptions = {
-  conversationId?: string;
-  user?: string;
-};
-
-type DefiRequest = {
+type DifyPayload = {
   inputs: Record<string, unknown>;
   query: string;
   response_mode: "streaming" | "blocking";
   conversation_id?: string;
   user?: string;
 };
+
+export type DifyRequest = {
+  query: string;
+  from: string;
+  conversationId?: string;
+  user?: string;
+};
+
 export default class Dify {
   private readonly apiKey: string;
   private readonly logger: FastifyBaseLogger;
 
   constructor(config: Config) {
-    this.apiKey = config.DIFY_API_KEY;
+    this.apiKey = config.defiyApiKey;
     this.logger = config.logger;
   }
 
   async streamMessage(
-    query: string,
+    request: DifyRequest,
     onStream: (last: boolean, conversationId?: string, answer?: string) => void,
-    options?: RequestOptions,
   ): Promise<void> {
-    const payload: DefiRequest = {
+    const payload: DifyPayload = {
       inputs: {
-        to: "+17786886587",
+        from: request.from,
         channel: "voice",
       },
-      query: query,
+      query: request.query,
       response_mode: "streaming",
     };
-    if (options) {
-      payload.user = options.user;
-      payload.conversation_id = options.conversationId;
+    if (request.conversationId) {
+      payload.conversation_id = request.conversationId;
+    }
+    if (request.user) {
+      payload.user = request.user;
     }
 
     try {
@@ -137,21 +141,20 @@ export default class Dify {
     }
   }
 
-  async sendMessage(
-    query: string,
-    options?: RequestOptions,
-  ): Promise<DifyMessage> {
-    const payload: DefiRequest = {
+  async sendMessage(request: DifyRequest): Promise<DifyMessage> {
+    const payload: DifyPayload = {
       inputs: {
-        to: "+17786886587",
+        from: request.from,
         channel: "text",
       },
-      query: query,
+      query: request.query,
       response_mode: "blocking",
     };
-    if (options) {
-      payload.user = options.user;
-      payload.conversation_id = options.conversationId;
+    if (request.conversationId) {
+      payload.conversation_id = request.conversationId;
+    }
+    if (request.user) {
+      payload.user = request.user;
     }
 
     try {

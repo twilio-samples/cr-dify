@@ -18,7 +18,9 @@ export default async function messageHandler(
     return;
   }
 
-  const response = await difyClient.sendMessage(body.Body, {
+  const response = await difyClient.sendMessage({
+    query: body.Body,
+    from: body.From,
     user: body.From,
     conversationId,
   });

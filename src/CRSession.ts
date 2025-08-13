@@ -4,9 +4,10 @@ import {
   PromptMessage,
   DTMFMessage,
   ErrorMessage,
-} from "@twilio-labs/conversationrelay-bridge";
+  diContainer,
+} from "@twilio-forward/conversationrelay-bridge";
 import { DifyClient } from "./clients";
-import { diContainer } from "@twilio-labs/conversationrelay-bridge";
+import { DifyRequest } from "./clients/dify";
 
 export interface Message {
   role: "user" | "assistant";
@@ -28,19 +29,28 @@ export default class CRSession extends ConversationRelaySession {
   }
 
   async handlePrompt(event: PromptMessage): Promise<void> {
-    const userMessage = event.voicePrompt;
-    this.logger.info(`User prompt received: ${userMessage}`);
+    const query = event.voicePrompt;
+    this.logger.info(`User prompt received: ${query}`);
 
     if (!this.session) {
       this.logger.error("Session not found for prompt");
       return;
     }
 
-    this.history.push({ role: "user", content: userMessage });
+    this.history.push({ role: "user", content: query });
 
     try {
+      const payload: DifyRequest = {
+        query,
+        from: this.session.from,
+        user: this.session.from,
+      };
+      if (this.difyConversationId) {
+        payload.conversationId = this.difyConversationId;
+      }
+
       await this.difyClient.streamMessage(
-        userMessage,
+        payload,
         (last: boolean, conversationId, answer?: string) => {
           this.logger.info(
             `Streaming partial response: ${answer}, lastToken: ${last}`,
@@ -57,10 +67,6 @@ export default class CRSession extends ConversationRelaySession {
           }
 
           this.sendToken(answer ?? "", last);
-        },
-        {
-          conversationId: this.difyConversationId,
-          user: this.session.from,
         },
       );
       this.logger.info("Streaming complete");
