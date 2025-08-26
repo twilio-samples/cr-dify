@@ -23,18 +23,19 @@ For local development, make sure you have Node and [ngrok](https://ngrok.com/dow
 5) Go to `Studio` from the top menu and create click `Create from blank` and select `Chatflow`. Give it a name and description.
 6) Delete the `LLM` component. Add a `node` using `+` and select `Agent`. Connect `Start -> Agent -> Answer`.
 7) Select `Start` and add a custom `input field`. Choose `Short Text` and set the name as `from` and mark it as `required`.
-8) Select `Agent`:
-    8.1) For `Agentic Strategy`, select `Agent -> ReAct`
-    8.2) For `Model`, choose your favorite model from the dropdown.
-    8.3) Add `Twilio - Send Message` to the list of available tools.
-    8.4) Add a friendly instruction for the system prompt.
-    8.5) Inside the `Query` add the following:
-    ```
-    Query: {{start.sys.query}}
-    Customer Number: {{start.x.from}}
-    ConversationId: {{start.sys.conversation_id}}
-    ```
-    8.6) Enable `memory`
+8. Select `Agent`:
+   1. For `Agentic Strategy`, select `Agent -> ReAct`
+   2. For `Model`, choose your favorite model from the dropdown.
+   3. Add `Twilio - Send Message` to the list of available tools.
+   4. Add a friendly instruction for the system prompt.
+   5. Inside the `Query` add the following:
+
+      ```
+      Query: {{start.sys.query}}
+      Customer Number: {{start.x.from}}
+      ConversationId: {{start.sys.conversation_id}}
+      ```
+   6. Enable `memory`
 9) Now `publish` your changes.
 10) Select `API Access` from the left panel, and click on `API Key` on the top right corner. Create a new service key and save it to `.env` as `DIF_API_KEY`.
 
@@ -51,6 +52,7 @@ This repo includes the cofiguration for easily deploying the application to Fly.
 3) Grab the domain name of your newly created Fly app and update your local `.env` with the `DOMAIN` value.
 3) Setup the secrets: `fly secrets import < .env`
 4) Deploy the application: `fly deploy`
-5) View the logs: `fly logs`
+5) Scale down instances to 1 (if you want to keep this free) using `fly scale count 1`
+6) View the logs: `fly logs`
 
 You can now set the Incoming Webhook of your Twilio number to point to `DOMAIN/twiml`.
