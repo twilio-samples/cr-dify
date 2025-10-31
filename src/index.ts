@@ -26,7 +26,7 @@ const start = async (): Promise<void> => {
   try {
     await server.listen({ port: server.config.PORT, host: "0.0.0.0" });
     const welcomeMessage = [
-      "🚀 Twilio - DIFY Bridge Server Started!",
+      "\n🚀 Twilio - DIFY Bridge Server Started!",
       "====================================",
       `Port: ${server.config.PORT}`,
       `Localhost: http://localhost:${server.config.PORT}`,
@@ -39,7 +39,7 @@ const start = async (): Promise<void> => {
       "Ready to receive calls! 📞",
     ];
 
-    console.log(welcomeMessage.join("\n"));
+    server.log.info(welcomeMessage.join("\n"));
   } catch (err) {
     server.log.error(err);
     process.exit(1);

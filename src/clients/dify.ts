@@ -64,7 +64,7 @@ export default class Dify {
     onStream: (last: boolean, conversationId?: string, answer?: string) => void,
   ): Promise<void> {
     const start = Date.now();
-    let firstTime = false;
+    let firstTime = true;
     const payload: DifyPayload = {
       inputs: {
         from: request.from,
@@ -130,8 +130,8 @@ export default class Dify {
             conversation_id: string;
           };
           if (data.event === "message" && data.answer) {
-            if (!firstTime) {
-              firstTime = true;
+            if (firstTime) {
+              firstTime = false;
               this.logger.info(`First token latency: ${Date.now() - start}ms`);
             }
 
